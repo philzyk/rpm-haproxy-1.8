@@ -1,6 +1,6 @@
 HOME=$(shell pwd)
-MAINVERSION=1.6
-VERSION=1.6.12
+MAINVERSION=1.8
+VERSION=1.8-dev2
 RELEASE=1
 
 all: build
@@ -14,7 +14,7 @@ clean:
 	mkdir -p ./rpmbuild/SPECS/ ./rpmbuild/SOURCES/ ./rpmbuild/RPMS/ ./rpmbuild/SRPMS/
 
 download-upstream:
-	wget http://www.haproxy.org/download/${MAINVERSION}/src/haproxy-${VERSION}.tar.gz -O ./SOURCES/haproxy-${VERSION}.tar.gz 
+	wget http://www.haproxy.org/download/${MAINVERSION}/src/devel/haproxy-${VERSION}.tar.gz -O ./SOURCES/haproxy-${VERSION}.tar.gz 
 
 build: install_prereq clean download-upstream
 	cp -r ./SPECS/* ./rpmbuild/SPECS/ || true
