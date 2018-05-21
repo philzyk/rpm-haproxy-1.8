@@ -36,6 +36,13 @@ Requires(preun):    chkconfig, initscripts
 Requires(postun):   initscripts
 %endif
 
+
+%if 0%{?amzn1}
+Requires(post):     chkconfig, initscripts
+Requires(preun):    chkconfig, initscripts
+Requires(postun):   initscripts
+%endif
+
 %if 0%{?el7}
 BuildRequires:      systemd-units
 Requires(post):     systemd
@@ -89,6 +96,10 @@ regparm_opts="USE_REGPARM=1"
 %{__install} -d %{buildroot}%{_sysconfdir}/rc.d/init.d
 %{__install} -c -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %endif    
+%if 0%{?amzn1}
+%{__install} -d %{buildroot}%{_sysconfdir}/rc.d/init.d
+%{__install} -c -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
+%endif    
 %if 0%{?el7}
 %{__install} -s %{name}-systemd-wrapper %{buildroot}%{_sbindir}/
 %{__install} -p -D -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
@@ -121,12 +132,24 @@ systemctl restart rsyslog.service
 /sbin/service rsyslog restart >/dev/null 2>&1 || :
 %endif
 
+%if 0%{?amzn1}
+/sbin/chkconfig --add %{name}
+/sbin/service rsyslog restart >/dev/null 2>&1 || :
+%endif
+
 %preun
 %if 0%{?el7}
 %systemd_preun %{name}.service
 %endif
 
 %if 0%{?el6}
+if [ $1 = 0 ]; then
+  /sbin/service %{name} stop >/dev/null 2>&1 || :
+  /sbin/chkconfig --del %{name}
+fi
+%endif
+
+%if 0%{?amzn1}
 if [ $1 = 0 ]; then
   /sbin/service %{name} stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del %{name}
@@ -146,6 +169,13 @@ if [ "$1" -ge "1" ]; then
 fi
 %endif
 
+%if 0%{?amzn1}
+if [ "$1" -ge "1" ]; then
+  /sbin/service %{name} condrestart >/dev/null 2>&1 || :
+  /sbin/service rsyslog restart >/dev/null 2>&1 || :
+fi
+%endif
+
 %files
 %defattr(-,root,root)
 %doc CHANGELOG README examples/*.cfg doc/architecture.txt doc/configuration.txt doc/intro.txt doc/management.txt doc/proxy-protocol.txt
@@ -154,6 +184,9 @@ fi
 
 %attr(0755,root,root) %{_sbindir}/%{name}
 %if 0%{?el6}
+%attr(0755,root,root) %config %_sysconfdir/rc.d/init.d/%{name}
+%endif    
+%if 0%{?amzn1}
 %attr(0755,root,root) %config %_sysconfdir/rc.d/init.d/%{name}
 %endif    
 %if 0%{?el7}
@@ -166,7 +199,12 @@ fi
 %attr(0644,root,root) %config %{_sysconfdir}/logrotate.d/%{name}
 %attr(0644,root,root) %config %{_sysconfdir}/rsyslog.d/49-%{name}.conf
 
+
 %changelog
+* Mon May 21 2018 Unixengineer <uniengineer@gmail.com>
+- Update for HAProxy 1.8.9
+- Update for Amazon Linux 1
+
 * Sun Jan 15 2017 David Bezemer <info@davidbezemer.nl>
 - Update for HAproxy 1.6.11
 
