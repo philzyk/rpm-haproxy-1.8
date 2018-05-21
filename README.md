@@ -10,14 +10,14 @@ Perform the following on a build box as a regular user.
 
 ## Checkout this repository
 
-    cd /opt
+    cd ~/Code
     git clone https://github.com/unixengineer/rpm-haproxy.git 
     cd ./rpm-haproxy
 
 ## Build using makefile
     make
     
-Resulting RPM will be in /opt/rpm-haproxy/rpmbuild/RPMS/
+Resulting RPM will be in ~/Code/rpm-haproxy/rpmbuild/RPMS/x86_64
 
 ## Credits
 
