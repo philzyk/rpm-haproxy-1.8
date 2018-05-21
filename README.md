@@ -1,6 +1,6 @@
 [![Github All Releases](https://img.shields.io/github/downloads/DBezemer/rpm-haproxy/total.svg)](https://github.com/DBezemer/rpm-haproxy/releases)
 
-# A Recipe for a haproxy 1.6 stable version RPM on CentOS
+# A Recipe for a haproxy 1.8 stable version RPM on CentOS/Amazon Linux
 
 Perform the following on a build box as a regular user.
 
@@ -11,7 +11,7 @@ Perform the following on a build box as a regular user.
 ## Checkout this repository
 
     cd /opt
-    git clone https://github.com/DBezemer/rpm-haproxy.git 
+    git clone https://github.com/unixengineer/rpm-haproxy.git 
     cd ./rpm-haproxy
 
 ## Build using makefile
