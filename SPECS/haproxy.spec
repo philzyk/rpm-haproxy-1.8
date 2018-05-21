@@ -21,11 +21,12 @@ URL: http://www.haproxy.org/
 Source0: http://www.haproxy.org/download/1.6/src/%{name}-%{version}.tar.gz
 Source1: %{name}.cfg
 %{?el6:Source2: %{name}.init}
+%{?amzn1:Source2: %{name}.init}
 %{?el7:Source2: %{name}.service}
 Source3: %{name}.logrotate
 Source4: %{name}.syslog%{?dist}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: pcre-devel make gcc openssl-devel 
+BuildRequires: pcre-devel make gcc openssl-devel
 
 
 Requires(pre):      shadow-utils
@@ -82,7 +83,7 @@ regparm_opts="USE_REGPARM=1"
 
 %install
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
- 
+
 %{__install} -d %{buildroot}%{_sbindir}
 %{__install} -d %{buildroot}%{_sysconfdir}/logrotate.d
 %{__install} -d %{buildroot}%{_sysconfdir}/rsyslog.d
@@ -95,11 +96,11 @@ regparm_opts="USE_REGPARM=1"
 %if 0%{?el6}
 %{__install} -d %{buildroot}%{_sysconfdir}/rc.d/init.d
 %{__install} -c -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
-%endif    
+%endif
 %if 0%{?amzn1}
 %{__install} -d %{buildroot}%{_sysconfdir}/rc.d/init.d
 %{__install} -c -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
-%endif    
+%endif
 %if 0%{?el7}
 %{__install} -s %{name}-systemd-wrapper %{buildroot}%{_sbindir}/
 %{__install} -p -D -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
@@ -120,7 +121,7 @@ getent passwd %{haproxy_user} >/dev/null || \
        useradd -u 188 -r -g %{haproxy_group} -d %{haproxy_home} \
        -s /sbin/nologin -c "%{name}" %{haproxy_user}
 exit 0
- 
+
 %post
 %if 0%{?el7}
 %systemd_post %{name}.service
@@ -185,10 +186,10 @@ fi
 %attr(0755,root,root) %{_sbindir}/%{name}
 %if 0%{?el6}
 %attr(0755,root,root) %config %_sysconfdir/rc.d/init.d/%{name}
-%endif    
+%endif
 %if 0%{?amzn1}
 %attr(0755,root,root) %config %_sysconfdir/rc.d/init.d/%{name}
-%endif    
+%endif
 %if 0%{?el7}
 %attr(0755,root,root) %{_sbindir}/%{name}-systemd-wrapper
 %attr(-,root,root) %{_unitdir}/%{name}.service
